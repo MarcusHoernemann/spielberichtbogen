@@ -13,6 +13,9 @@
     <meta name="apple-mobile-web-app-title" content="DC Issso">
     <meta name="mobile-web-app-capable" content="yes">
 
+    <!-- html2pdf.js für den PDF-Export -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+
 <!--########## CSS Design ##########-->    
 
     <style>
@@ -25,6 +28,7 @@
             --text: #e0e0e0;
             --border: #444;
             --danger: #e74c3c;
+            --danger-hover: #c0392b;
             --input-bg: #2a2a2a;
         }
 
@@ -96,7 +100,6 @@
             width: 100%;
         }
 
-        /* Fix für Dropdown-Optionen (Auswahlliste) im Darkmode */
         select option {
             background-color: var(--input-bg);
             color: var(--text);
@@ -137,6 +140,8 @@
             margin-bottom: 25px;
             overflow: hidden;
             background: var(--container-bg);
+            page-break-inside: avoid;
+            break-inside: avoid;
         }
 
         .block-title {
@@ -149,7 +154,7 @@
 
         .match-row {
             display: grid;
-            grid-template-columns: 50px 1fr 1fr 1fr 1fr;
+            grid-template-columns: 80px 1fr 1fr 1fr 1fr;
             gap: 10px;
             align-items: center;
             padding: 10px 15px;
@@ -258,18 +263,26 @@
             color: var(--secondary);
         }
 
+        .button-group {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        button.action-btn {
+            padding: 14px 20px;
+            font-size: 1em;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            border: none;
+            transition: background-color 0.3s, opacity 0.2s;
+            flex: 1;
+        }
+
         button.submit-btn {
             background-color: var(--accent);
             color: white;
-            border: none;
-            padding: 15px 20px;
-            font-size: 1.1em;
-            border-radius: 8px;
-            cursor: pointer;
-            width: 100%;
-            margin-top: 20px;
-            font-weight: bold;
-            transition: background-color 0.3s;
         }
 
         button.submit-btn:hover {
@@ -280,6 +293,15 @@
             background-color: #555;
             color: #888;
             cursor: not-allowed;
+        }
+
+        button.reset-btn {
+            background-color: var(--danger);
+            color: white;
+        }
+
+        button.reset-btn:hover {
+            background-color: var(--danger-hover);
         }
 
         .status-msg {
@@ -297,7 +319,7 @@
             display: flex;
             flex-wrap: wrap;
             align-items: center;
-            justify-content: space-between;
+            justify-content: flex-start;
             background-color: #252525; 
             padding: 6px 12px;
             border-radius: 8px;
@@ -334,30 +356,14 @@
             transform: scale(0.8);
         }
 
-        .settings-group input[type="number"] {
-            width: 45px;
-            padding: 2px 4px;
-            font-size: 10px;
-            height: auto;
-            border: 1px solid var(--border);
-            background-color: var(--input-bg);
-            color: var(--text); 
-            border-radius: 4px;
-            -moz-appearance: textfield; 
-        }
-
-        .settings-group input[type="number"]::-webkit-outer-spin-button,
-        .settings-group input[type="number"]::-webkit-inner-spin-button {
-            -webkit-appearance: none;
-            margin: 0;
-        }
-
         .result-container {
             background: #252525;
             padding: 15px;
             border: 1px solid var(--border);
             border-radius: 8px;
             margin-bottom: 20px;
+            page-break-inside: avoid;
+            break-inside: avoid;
         }
 
         .result-row {
@@ -391,108 +397,6 @@
             font-weight: bold;
         }
 
-        .fab {
-            position: fixed;
-            bottom: 25px;
-            right: 25px;
-            background-color: #2644cc;
-            color: white;
-            border: 2px solid white;
-            border-radius: 50%;
-            width: 65px;
-            height: 65px;
-            font-size: 30px;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.5);
-            cursor: pointer;
-            z-index: 1000;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            transition: transform 0.2s;
-        }
-
-        .fab:active {
-            transform: scale(0.95);
-        }
-
-        .modal {
-            display: none;
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.8);
-            z-index: 1001;
-            justify-content: center;
-            align-items: center;
-            backdrop-filter: blur(3px);
-        }
-
-        .modal-content {
-            background: var(--container-bg);
-            padding: 25px;
-            border-radius: 12px;
-            width: 90%;
-            max-width: 400px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.5);
-        }
-
-        .counter-row {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 12px;
-            padding: 10px 0;
-            border-bottom: 1px solid var(--border);
-        }
-
-        .counter-name {
-            font-weight: 600;
-            font-size: 1.1em;
-            color: var(--primary);
-            flex-grow: 1;
-        }
-
-        .counter-controls {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-        }
-
-        .counter-btn {
-            width: 40px;
-            height: 40px;
-            border-radius: 8px;
-            border: none;
-            background: var(--accent);
-            color: white;
-            font-size: 20px;
-            font-weight: bold;
-            cursor: pointer;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            transition: background 0.2s;
-        }
-        
-        .counter-btn.minus {
-            background: var(--secondary);
-        }
-
-        .counter-val {
-            font-weight: bold;
-            font-size: 1.2em;
-            width: 25px;
-            text-align: center;
-        }
-
-        .modal-close {
-            margin-top: 20px;
-            background-color: var(--secondary);
-            color: white;
-        }
-        .modal-close:hover {
-            background-color: #5d6d7e;
-        }
-
         .copyright {
             text-align: center;
             margin-top: 25px;
@@ -500,6 +404,256 @@
             font-size: 0.85em;
             color: var(--secondary);
             border-top: 1px solid var(--border);
+        }
+
+        /* -------------------------------------------------------------
+           PDF-Export-Stile (Blöcke ungeteilt, klare Seitenaufteilung)
+        ------------------------------------------------------------- */
+        .pdf-section {
+            page-break-inside: avoid;
+            break-inside: avoid;
+        }
+
+        .pdf-page-break {
+            page-break-before: always !important;
+            break-before: page !important;
+        }
+
+        .pdf-export-mode {
+            background-color: #ffffff !important;
+            color: #000000 !important;
+            padding: 10px !important;
+            margin: 0 !important;
+            border-radius: 0 !important;
+            box-shadow: none !important;
+            width: 100% !important;
+            max-width: 100% !important;
+            box-sizing: border-box !important;
+            font-size: 11px !important;
+            line-height: 1.35 !important;
+        }
+
+        .pdf-export-mode h1 {
+            font-size: 19px !important;
+            margin: 0 0 8px 0 !important;
+            padding-bottom: 3px !important;
+            color: #1a252f !important;
+            border-bottom: 2px solid #2c3e50 !important;
+            text-align: center !important;
+        }
+
+        .pdf-export-mode h2 {
+            font-size: 13px !important;
+            margin: 10px 0 5px 0 !important;
+            padding-bottom: 2px !important;
+            color: #2c3e50 !important;
+            border-bottom: 1.5px solid #bdc3c7 !important;
+        }
+
+        .pdf-export-mode .settings-bar {
+            display: none !important;
+        }
+
+        .pdf-export-mode .grid-4 {
+            display: grid !important;
+            grid-template-columns: repeat(4, 1fr) !important;
+            gap: 10px !important;
+            margin-bottom: 8px !important;
+        }
+
+        .pdf-export-mode .grid-2 {
+            display: grid !important;
+            grid-template-columns: 1fr 1fr !important;
+            gap: 12px !important;
+            margin-bottom: 8px !important;
+        }
+
+        .pdf-export-mode .form-group {
+            margin-bottom: 5px !important;
+        }
+
+        .pdf-export-mode label {
+            font-size: 9px !important;
+            margin-bottom: 2px !important;
+            color: #333 !important;
+            font-weight: bold !important;
+        }
+
+        .pdf-export-mode input[type="text"],
+        .pdf-export-mode input[type="number"],
+        .pdf-export-mode input[type="date"],
+        .pdf-export-mode textarea,
+        .pdf-export-mode select {
+            padding: 4px 6px !important;
+            font-size: 10.5px !important;
+            background-color: #fff !important;
+            color: #000 !important;
+            border: 1px solid #888 !important;
+            border-radius: 4px !important;
+            height: 26px !important;
+            box-sizing: border-box !important;
+        }
+
+        .pdf-export-mode textarea {
+            height: 50px !important;
+        }
+
+        .pdf-export-mode .player-grid {
+            grid-template-columns: 75px 1fr 1fr !important;
+            gap: 5px !important;
+            margin-top: 5px !important;
+        }
+
+        .pdf-export-mode .player-grid div {
+            font-size: 10px !important;
+        }
+
+        .pdf-export-mode .ersatz-bg {
+            background-color: #f7f9fa !important;
+            color: #000 !important;
+            border: 1px dashed #aaa !important;
+        }
+
+        .pdf-export-mode .block-container {
+            border: 1.5px solid #7f8c8d !important;
+            border-radius: 6px !important;
+            margin-bottom: 12px !important;
+            background: #fff !important;
+            page-break-inside: avoid !important;
+            break-inside: avoid !important;
+        }
+
+        .pdf-export-mode .block-title {
+            background-color: #2c3e50 !important;
+            color: #ffffff !important;
+            padding: 5px 10px !important;
+            font-size: 11.5px !important;
+            font-weight: bold !important;
+        }
+
+        /* Feste, überschneidungsfreie Spaltenbreiten für den Match-Table */
+        .pdf-export-mode .match-row {
+            display: grid !important;
+            grid-template-columns: 65px 1fr 1fr 90px 90px !important;
+            gap: 10px !important;
+            padding: 5px 10px !important;
+            border-bottom: 1px solid #e0e0e0 !important;
+            align-items: center !important;
+            page-break-inside: avoid !important;
+            break-inside: avoid !important;
+        }
+
+        .pdf-export-mode .match-row:nth-child(even) {
+            background-color: #f9fbfd !important;
+        }
+
+        .pdf-export-mode .match-header {
+            background-color: #34495e !important;
+            color: #ffffff !important;
+            font-size: 10.5px !important;
+            padding: 5px 10px !important;
+        }
+
+        .pdf-export-mode .dynamic-player {
+            color: #1a252f !important;
+            font-size: 10.5px !important;
+            font-weight: bold !important;
+        }
+
+        .pdf-export-mode .player-name-display {
+            font-size: 9px !important;
+            color: #555 !important;
+            margin-left: 4px !important;
+        }
+
+        .pdf-export-mode .set-controls {
+            gap: 5px !important;
+        }
+
+        .pdf-export-mode .set-box {
+            width: 17px !important;
+            height: 17px !important;
+            border: 1.5px solid #666 !important;
+            border-radius: 3px !important;
+            background-color: #ffffff !important;
+        }
+
+        .pdf-export-mode .set-box.active {
+            background-color: #27ae60 !important;
+            border-color: #1e8449 !important;
+        }
+
+        .pdf-export-mode .sub-row {
+            padding: 6px 10px !important;
+            gap: 5px !important;
+            background-color: #f4f6f7 !important;
+            border-top: 1px dashed #bdc3c7 !important;
+            page-break-inside: avoid !important;
+            break-inside: avoid !important;
+        }
+
+        .pdf-export-mode .sub-twin-container {
+            gap: 6px !important;
+        }
+
+        .pdf-export-mode .compact-sub {
+            padding: 2px 4px !important;
+            border: 1px solid #ccc !important;
+            background: #fff !important;
+            border-radius: 4px !important;
+        }
+
+        .pdf-export-mode .compact-sub select {
+            padding: 2px 4px !important;
+            font-size: 9.5px !important;
+            height: 22px !important;
+        }
+
+        .pdf-export-mode .compact-sub span {
+            font-size: 9.5px !important;
+            padding: 0 3px !important;
+        }
+
+        .pdf-export-mode .result-container {
+            background: #f8f9fa !important;
+            padding: 8px 12px !important;
+            border: 1.5px solid #bdc3c7 !important;
+            border-radius: 6px !important;
+            margin-bottom: 10px !important;
+        }
+
+        .pdf-export-mode .result-row {
+            gap: 10px !important;
+            margin-bottom: 5px !important;
+        }
+
+        .pdf-export-mode .result-label {
+            min-width: 120px !important;
+            font-size: 11px !important;
+            color: #2c3e50 !important;
+        }
+
+        .pdf-export-mode .result-row label {
+            font-size: 10.5px !important;
+            color: #333 !important;
+        }
+
+        .pdf-export-mode .result-row input {
+            width: 45px !important;
+            height: 24px !important;
+            font-size: 11.5px !important;
+            padding: 2px !important;
+            border: 1px solid #7f8c8d !important;
+            background-color: #fff !important;
+            color: #000 !important;
+        }
+
+        .pdf-export-mode .copyright {
+            margin-top: 8px !important;
+            padding-top: 5px !important;
+            font-size: 8.5px !important;
+            color: #7f8c8d !important;
+            border-top: 1px solid #ddd !important;
         }
 
         @media (max-width: 600px) {
@@ -533,93 +687,108 @@
                 flex-direction: row;
                 flex-wrap: wrap;
             }
+            .button-group {
+                flex-direction: column;
+            }
         }
     </style>
 </head>
 <body>
 
-<div class="container">
-    <h1>DC Issso Spielbericht</h1>
+<div class="container" id="reportContent">
     
-    <form id="dartForm">
+    <!-- SEITE 1: Kopfdaten, Aufstellung & Block 1 -->
+    <div id="pdfPage1" class="pdf-section">
+        <h1>DC NBV2 Spielbericht</h1>
         
-        <div class="settings-bar">
-            <div class="settings-group">
-                <label>Mannschaft:</label>
-                <label class="radio-label"><input type="radio" name="teamRolle" value="Heim" checked> Heim</label>
-                <label class="radio-label"><input type="radio" name="teamRolle" value="Gast"> Gast</label>
+        <form id="dartForm">
+            
+            <div class="settings-bar">
+                <div class="settings-group">
+                    <label>Mannschaft:</label>
+                    <label class="radio-label"><input type="radio" name="teamRolle" value="Heim" checked> Heim</label>
+                    <label class="radio-label"><input type="radio" name="teamRolle" value="Gast"> Gast</label>
+                </div>
             </div>
-            <div class="settings-group">
-                <label for="strafeWert">Strafe pro Fehlwurf (€):</label>
-                <input type="number" id="strafeWert" step="0.01" value="0.20" min="0">
-            </div>
-        </div>
 
-        <div class="grid-4">
-            <div class="form-group">
-                <label>Datum</label>
-                <input type="date" id="datum" required>
+            <div class="grid-4">
+                <div class="form-group">
+                    <label>Datum</label>
+                    <input type="date" id="datum" required>
+                </div>
+                <div class="form-group">
+                    <label>Liga-Gruppe</label>
+                    <input type="text" id="liga">
+                </div>
+                <div class="form-group">
+                    <label>Spielnr.</label>
+                    <input type="text" id="spielnr">
+                </div>
+                <div class="form-group">
+                    <label>Disziplin</label>
+                    <select id="disziplin">
+                        <option value="301 Single out">301 Single out</option>
+                        <option value="301 Master out">301 Master out</option>
+                        <option value="501 Master out">501 Master out</option>
+                        <option value="501 Double out">501 Double out</option>
+                    </select>
+                </div>
             </div>
-            <div class="form-group">
-                <label>Liga-Gruppe</label>
-                <input type="text" id="liga">
-            </div>
-            <div class="form-group">
-                <label>Spielnr.</label>
-                <input type="text" id="spielnr">
-            </div>
-            <div class="form-group">
-                <label>Disziplin</label>
-                <select id="disziplin">
-                    <option value="301 Single out">301 Single out</option>
-                    <option value="301 Master out">301 Master out</option>
-                    <option value="501 Master out">501 Master out</option>
-                    <option value="501 Double out">501 Double out</option>
-                </select>
-            </div>
-        </div>
 
 <!--########## Mannschaftsaufstellung ##########-->
 
-        <h2>Mannschaftsaufstellung</h2>
-        <div class="grid-2">
-            <div>
-                <div class="form-group">
-                    <label>Heim-Team (Teamname)</label>
-                    <input type="text" id="heimTeam" required>
+            <h2>Mannschaftsaufstellung</h2>
+            <div class="grid-2">
+                <div>
+                    <div class="form-group">
+                        <label>Heim-Team (Teamname)</label>
+                        <input type="text" id="heimTeam" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Teamkapitän (Heim)</label>
+                        <div id="kapitaenHeimContainer"><input type="text" id="kapitaenHeim"></div>
+                    </div>
+                    <div class="player-grid" id="heimRoster">
+                        <!-- Dynamisch befüllt -->
+                    </div>
                 </div>
-                <div class="form-group">
-                    <label>Teamkapitän (Heim)</label>
-                    <div id="kapitaenHeimContainer"><input type="text" id="kapitaenHeim"></div>
-                </div>
-                <div class="player-grid" id="heimRoster">
-                    <!-- Wird dynamisch durch JS befüllt -->
+
+                <div>
+                    <div class="form-group">
+                        <label>Gast-Team (Teamname)</label>
+                        <input type="text" id="gastTeam" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Teamkapitän (Gast)</label>
+                        <div id="kapitaenGastContainer"><input type="text" id="kapitaenGast"></div>
+                    </div>
+                    <div class="player-grid" id="gastRoster">
+                        <!-- Dynamisch befüllt -->
+                    </div>
                 </div>
             </div>
 
-            <div>
-                <div class="form-group">
-                    <label>Gast-Team (Teamname)</label>
-                    <input type="text" id="gastTeam" required>
-                </div>
-                <div class="form-group">
-                    <label>Teamkapitän (Gast)</label>
-                    <div id="kapitaenGastContainer"><input type="text" id="kapitaenGast"></div>
-                </div>
-                <div class="player-grid" id="gastRoster">
-                    <!-- Wird dynamisch durch JS befüllt -->
-                </div>
-            </div>
-        </div>
+<!--########## Block 1 ##########-->
+            <h2>Spielplan - Block 1</h2>
+            <div id="blockContainer1" class="pdf-section"></div>
+    </div>
 
-<!--########## Spielergebnis ##########-->
+    <!-- SEITE 2: Block 2 & Block 3 -->
+    <div id="pdfPage2" class="pdf-section">
+        <h2>Spielplan - Block 2 & 3</h2>
+        <div id="blockContainer2" class="pdf-section"></div>
+        <div id="blockContainer3" class="pdf-section"></div>
+    </div>
 
-        <h2>Spielplan</h2>
-        <div id="matchesContainer">
-        </div>
+    <!-- SEITE 3: Block 4, Endergebnis, Bestleistungen & Bemerkungen -->
+    <div id="pdfPage3" class="pdf-section">
+        <h2>Spielplan - Block 4</h2>
+        <div id="blockContainer4" class="pdf-section"></div>
+
+<!--########## Endergebnis & Gewinnsätze ##########-->
 
         <h2>Endergebnis & Gewinnsätze</h2>
-        <div class="result-container">
+        <div class="result-container pdf-section">
             <div class="result-row">
                 <span class="result-label">Spielergebnis:</span>
                 <label>Heim</label> <input type="number" id="spielergebnisHeim" readonly placeholder="0">
@@ -635,9 +804,9 @@
 <!--########## Bestleistungen ##########-->
 
         <h2>Bestleistungen</h2>
-        <div>
+        <div class="grid-4 pdf-section">
             <div class="form-group">
-                <label>High Score (180, 171, 162,153, immer nur das gleiche Triple Segment. Bull Eye 3x)</label>
+                <label>High Score (180, 171, ...)</label>
                 <input type="text" id="highScore">
             </div>
             <div class="form-group">
@@ -645,7 +814,7 @@
                 <input type="text" id="highFinish">
             </div>
             <div class="form-group">
-                <label>Short Game (301 bis 12 Darts / 501 bis 18 Darts)</label>
+                <label>Short Game</label>
                 <input type="text" id="shortGame">
             </div>
             <div class="form-group">
@@ -657,28 +826,17 @@
 <!--########## Bemerkungen ##########-->
 
         <h2>Bemerkungen</h2>
-        <div class="form-group">
+        <div class="form-group pdf-section">
             <textarea id="bemerkungen" rows="3"></textarea>
         </div>
 
-        <button type="submit" id="submitBtn" class="submit-btn">Spielbericht speichern</button>
-        <div id="statusMessage" class="status-msg"></div>
-    </form>
-    
-    <div class="copyright">&copy; 2026 Marcus Hörnemann 1.3.4</div>
-</div>
-
-<!--########## Lakritz Zähler Button ##########-->
-
-<button type="button" class="fab" id="openModalBtn">⚫</button>
-
-<div id="blackRingModal" class="modal">
-    <div class="modal-content">
-        <h2 style="margin-top: 0; font-size: 1.5em; border-bottom: none;">Lakritz Zähler</h2>
-        <p style="font-size: 0.9em; color: var(--secondary); margin-top: -10px;">Strafkasse: <span id="currentPenaltyDisplay">0,20</span> € / Wurf</p>
-        <div id="blackRingList">
+        <div class="button-group" id="formActions">
+            <button type="submit" id="submitBtn" class="action-btn submit-btn">Als PDF exportieren</button>
+            <button type="button" id="resetBtn" class="action-btn reset-btn">Neuer Spieltag (Zurücksetzen)</button>
         </div>
-        <button type="button" class="submit-btn modal-close" id="closeModalBtn">Fertig</button>
+        <div id="statusMessage" class="status-msg"></div>
+        </form>
+
     </div>
 </div>
 
@@ -687,10 +845,8 @@
 // ######################################## KONFIGURATION ########################################
 // ###############################################################################################
     
-    // --- Google Tabelle URL ---
-    const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbzAVipJcjV8aoF6XtKh8-V6Woq8PbVYRTQAKsjin4R-ChIx2UKKj0959hkAFRVrJSzQ/exec";
     // --- Vereinsname ---
-    const MEIN_VEREIN = "DC Issso";
+    const MEIN_VEREIN = "DC NBV2";
     // --- Spielernamen ---
     const unsereSpieler = [
         "Gerd", "Christian", "Tanja", "Marcus", "Rene",
@@ -698,18 +854,6 @@
     ];
     // --- Namen erster und zweiter TC ---
     const unsereKapitaene = ["Gerd", "Tanja"];
-
-    // --- Straf-Feld Formatierung auf 2 Nachkommastellen ---
-    const strafeInput = document.getElementById('strafeWert');
-    strafeInput.addEventListener('blur', function() {
-        if(this.value) {
-            let val = parseFloat(this.value.toString().replace(',', '.'));
-            if (!isNaN(val)) {
-                this.value = val.toFixed(2);
-                document.getElementById('currentPenaltyDisplay').textContent = val.toFixed(2).replace('.', ',');
-            }
-        }
-    });
 
     // --- Dynamische Roster- & Kapitän-Generierung ---
     function buildCaptain(prefix, isIsso) {
@@ -734,7 +878,7 @@
         
         const oldNames = {};
         const oldPasses = {};
-        for(let i=1; i<=6; i++) {
+        for(let i = 1; i <= 6; i++) {
             let el = document.querySelector(`.player-name-${prefix}[data-idx="${i}"]`);
             if(el) oldNames[i] = el.value;
             let passEl = document.querySelector(`.player-pass-${prefix}[data-idx="${i}"]`);
@@ -778,12 +922,12 @@
         [1,4], [2,3], [3,2], [4,1]  // Block 4
     ];
 
-    const matchesContainer = document.getElementById('matchesContainer');
     let currentBlock = null;
 
     basePairings.forEach((paarung, index) => {
         const gameNr = index + 1;
         const blockNr = Math.ceil(gameNr / 4);
+        const blockTarget = document.getElementById(`blockContainer${blockNr}`);
 
         if (gameNr % 4 === 1) {
             currentBlock = document.createElement('div');
@@ -798,7 +942,7 @@
                     <div>Sätze Gast</div>
                 </div>
             `;
-            matchesContainer.appendChild(currentBlock);
+            blockTarget.appendChild(currentBlock);
         }
 
         const row = document.createElement('div');
@@ -916,12 +1060,8 @@
             totalHeimSets += heimSets;
             totalGastSets += gastSets;
             
-            if (heimSets === 2) {
-                totalHeimGames++;
-            }
-            if (gastSets === 2) {
-                totalGastGames++;
-            }
+            if (heimSets === 2) totalHeimGames++;
+            if (gastSets === 2) totalGastGames++;
         }
         
         document.getElementById('gewinnsaetzeHeim').value = totalHeimSets;
@@ -930,11 +1070,13 @@
         document.getElementById('spielergebnisGast').value = totalGastGames;
     }
 
-    document.getElementById('matchesContainer').addEventListener('click', function(e) {
-        if (e.target.classList.contains('set-box')) {
-            e.target.classList.toggle('active');
-            calculateTotals();
-        }
+    document.querySelectorAll('[id^="blockContainer"]').forEach(container => {
+        container.addEventListener('click', function(e) {
+            if (e.target.classList.contains('set-box')) {
+                e.target.classList.toggle('active');
+                calculateTotals();
+            }
+        });
     });
 
     function updateMatches() {
@@ -989,7 +1131,6 @@
         }
     }
 
-    // Event Delegation für dynamisch erstellte Roster Felder
     ['heimRoster', 'gastRoster'].forEach(id => {
         const el = document.getElementById(id);
         el.addEventListener('change', function(e) {
@@ -1004,20 +1145,8 @@
         select.addEventListener('change', updateMatches);
     });
 
-    // --- Logik für den Schwarzen Ring (Robuste Version für Heim UND Gast) ---
-    const openModalBtn = document.getElementById('openModalBtn');
-    const closeModalBtn = document.getElementById('closeModalBtn');
-    const blackRingModal = document.getElementById('blackRingModal');
-    const blackRingList = document.getElementById('blackRingList');
-    const currentPenaltyDisplay = document.getElementById('currentPenaltyDisplay');
     const heimTeamInput = document.getElementById('heimTeam');
     const gastTeamInput = document.getElementById('gastTeam');
-    
-    // Beide Mannschaften werden fest gespeichert, damit kein Zähler aus Versehen gelöscht wird
-    let penalties = {
-        h: [0, 0, 0, 0, 0, 0],
-        g: [0, 0, 0, 0, 0, 0]
-    };
 
     function updateTeamNameAuto() {
         const isHeim = document.querySelector('input[name="teamRolle"]:checked').value === 'Heim';
@@ -1039,208 +1168,104 @@
         updateMatches();
     }
 
-    // Wenn gewechselt wird, wird der Name angepasst, aber die Zähler BLEIBEN erhalten
     document.querySelectorAll('input[name="teamRolle"]').forEach(radio => {
         radio.addEventListener('change', updateTeamNameAuto);
+    });
+
+    function resetFormComplete() {
+        document.getElementById('dartForm').reset();
+        
+        const heimRadio = document.querySelector('input[name="teamRolle"][value="Heim"]');
+        if (heimRadio) heimRadio.checked = true;
+        
+        document.querySelectorAll('.sub-trigger').forEach(select => {
+            select.value = "";
+        });
+
+        document.querySelectorAll('.set-box.active').forEach(box => {
+            box.classList.remove('active');
+        });
+
+        updateTeamNameAuto();
+        calculateTotals();
+
+        const statusMsg = document.getElementById('statusMessage');
+        statusMsg.style.display = 'none';
+        statusMsg.textContent = '';
+    }
+
+    document.getElementById('resetBtn').addEventListener('click', () => {
+        if (confirm('Möchtest du das gesamte Formular für einen neuen Spieltag leeren?')) {
+            resetFormComplete();
+        }
     });
 
     // Initiales Setup
     updateTeamNameAuto();
 
-    function renderModal() {
-        blackRingList.innerHTML = '';
-        
-        let rawStrafe = strafeInput.value.toString().replace(',', '.');
-        let parsedStrafe = parseFloat(rawStrafe) || 0;
-        currentPenaltyDisplay.textContent = parsedStrafe.toFixed(2).replace('.', ',');
-        
-        const isHeim = document.querySelector('input[name="teamRolle"]:checked').value === 'Heim';
-        const prefix = isHeim ? 'h' : 'g';
-        const letter = isHeim ? 'H' : 'G';
-        
-        for(let i = 1; i <= 6; i++) {
-            // Live-Abfrage des Namens im Moment des Öffnens
-            let inputEl = document.querySelector(`.player-name-${prefix}[data-idx="${i}"]`);
-            let playerName = inputEl ? inputEl.value.trim() : '';
-            
-            // Wenn kein Name eingetragen ist, falle auf H1/G1 zurück
-            if(!playerName) playerName = `${letter}${i}`;
-            
-            const row = document.createElement('div');
-            row.className = 'counter-row';
-            row.innerHTML = `
-                <span class="counter-name">${playerName}</span>
-                <div class="counter-controls">
-                    <button type="button" class="counter-btn minus" onclick="updateCount('${prefix}', ${i-1}, -1)">-</button>
-                    <span class="counter-val" id="count-val-${prefix}-${i-1}">${penalties[prefix][i-1]}</span>
-                    <button type="button" class="counter-btn" onclick="updateCount('${prefix}', ${i-1}, 1)">+</button>
-                </div>
-            `;
-            blackRingList.appendChild(row);
-        }
-    }
-
-    window.updateCount = function(prefix, index, change) {
-        let newCount = penalties[prefix][index] + change;
-        if (newCount < 0) newCount = 0; 
-        penalties[prefix][index] = newCount;
-        document.getElementById(`count-val-${prefix}-${index}`).textContent = newCount;
-    }
-
-    openModalBtn.addEventListener('click', () => {
-        renderModal();
-        blackRingModal.style.display = 'flex';
-    });
-
-    closeModalBtn.addEventListener('click', () => {
-        blackRingModal.style.display = 'none';
-    });
-
-    // --- Formular absenden ---
+    // --- Formular absenden & PDF-Export (3-Seiten-Struktur ohne Block-Zerteilung) ---
     document.getElementById('dartForm').addEventListener('submit', async (e) => {
         e.preventDefault();
         
         const submitBtn = document.getElementById('submitBtn');
+        const resetBtn = document.getElementById('resetBtn');
+        const formActions = document.getElementById('formActions');
         const statusMsg = document.getElementById('statusMessage');
+        const reportContainer = document.getElementById('reportContent');
+        const page2 = document.getElementById('pdfPage2');
+        const page3 = document.getElementById('pdfPage3');
         
         submitBtn.disabled = true;
-        submitBtn.textContent = 'Speichere...';
+        resetBtn.disabled = true;
+        submitBtn.textContent = 'Erstelle PDF...';
         statusMsg.style.display = 'none';
 
-        const mannschaftHeim = [];
-        for(let i = 1; i <= 6; i++) {
-            mannschaftHeim.push({
-                pos: `H${i}`,
-                name: document.querySelector(`.player-name-h[data-idx="${i}"]`).value,
-                pass: document.querySelector(`.player-pass-h[data-idx="${i}"]`).value
-            });
-        }
-
-        const mannschaftGast = [];
-        for(let i = 1; i <= 6; i++) {
-            mannschaftGast.push({
-                pos: `G${i}`,
-                name: document.querySelector(`.player-name-g[data-idx="${i}"]`).value,
-                pass: document.querySelector(`.player-pass-g[data-idx="${i}"]`).value
-            });
-        }
-
-        const spiele = {};
-        for(let i = 1; i <= 16; i++) {
-            spiele[`spiel_${i}`] = {
-                heim_spieler: document.getElementById(`label-heim-${i}`).textContent.trim(),
-                gast_spieler: document.getElementById(`label-gast-${i}`).textContent.trim(),
-                heim_saetze: document.querySelectorAll(`#heim-sets-${i} .set-box.active`).length,
-                gast_saetze: document.querySelectorAll(`#gast-sets-${i} .set-box.active`).length
-            };
-        }
-
-        const auswechslungen = {};
-        for(let i = 1; i <= 3; i++) {
-            auswechslungen[`nach_block_${i}`] = {
-                heim_1: {
-                    raus: document.querySelector(`.sub-heim-out-1[data-block="${i}"]`).value,
-                    rein: document.querySelector(`.sub-heim-in-1[data-block="${i}"]`).value
-                },
-                heim_2: {
-                    raus: document.querySelector(`.sub-heim-out-2[data-block="${i}"]`).value,
-                    rein: document.querySelector(`.sub-heim-in-2[data-block="${i}"]`).value
-                },
-                gast_1: {
-                    raus: document.querySelector(`.sub-gast-out-1[data-block="${i}"]`).value,
-                    rein: document.querySelector(`.sub-gast-in-1[data-block="${i}"]`).value
-                },
-                gast_2: {
-                    raus: document.querySelector(`.sub-gast-out-2[data-block="${i}"]`).value,
-                    rein: document.querySelector(`.sub-gast-in-2[data-block="${i}"]`).value
-                }
-            };
-        }
-
-        const teamRolle = document.querySelector('input[name="teamRolle"]:checked').value;
-        
-        let rawStrafe = strafeInput.value.toString().replace(',', '.');
-        const strafeWert = parseFloat(rawStrafe) || 0;
-        const schwarzerRingDaten = [];
-        
-        // Beide Mannschaftsseiten (H und G) nach Strafen absuchen, um nichts zu übersehen
-        ['h', 'g'].forEach(prefix => {
-            let letter = prefix === 'h' ? 'H' : 'G';
-            for(let i = 1; i <= 6; i++) {
-                const count = penalties[prefix][i-1];
-                if (count > 0) {
-                    let inputEl = document.querySelector(`.player-name-${prefix}[data-idx="${i}"]`);
-                    let playerName = inputEl ? inputEl.value.trim() : '';
-                    if(!playerName) playerName = `${letter}${i}`;
-                    
-                    schwarzerRingDaten.push({
-                        pos: `${letter}${i}`,
-                        name: playerName,
-                        anzahl: count,
-                        betrag: (count * strafeWert).toFixed(2)
-                    });
-                }
-            }
-        });
-
-        const payload = {
-            teamRolle: teamRolle,
-            datum: document.getElementById('datum').value,
-            liga: document.getElementById('liga').value,
-            spielnr: document.getElementById('spielnr').value,
-            disziplin: document.getElementById('disziplin').value,
-            strafeProWurf: strafeWert,
-            heimTeam: document.getElementById('heimTeam').value,
-            gastTeam: document.getElementById('gastTeam').value,
-            kapitaenHeim: document.getElementById('kapitaenHeim').value,
-            kapitaenGast: document.getElementById('kapitaenGast').value,
-            mannschaftHeim: mannschaftHeim,
-            mannschaftGast: mannschaftGast,
-            spiele: spiele,
-            auswechslungen: auswechslungen,
-            spielergebnisHeim: document.getElementById('spielergebnisHeim').value,
-            spielergebnisGast: document.getElementById('spielergebnisGast').value,
-            gewinnsaetzeHeim: document.getElementById('gewinnsaetzeHeim').value,
-            gewinnsaetzeGast: document.getElementById('gewinnsaetzeGast').value,
-            bestleistungen: {
-                highScore: document.getElementById('highScore').value,
-                highFinish: document.getElementById('highFinish').value,
-                shortGame: document.getElementById('shortGame').value,
-                bullEye: document.getElementById('bullEye').value,
-                bemerkungen: document.getElementById('bemerkungen').value
-            },
-            strafkasse: schwarzerRingDaten
-        };
-
         try {
-            await fetch(WEB_APP_URL, {
-                method: 'POST',
-                mode: 'no-cors',
-                body: JSON.stringify(payload),
-                headers: {
-                    'Content-Type': 'text/plain;charset=utf-8',
-                }
-            });
+            const datum = document.getElementById('datum').value || 'Datum';
+            const heim = document.getElementById('heimTeam').value || 'Heim';
+            const gast = document.getElementById('gastTeam').value || 'Gast';
+            const fileName = `Spielbericht_${datum}_${heim}_vs_${gast}.pdf`.replace(/[^a-zA-Z0-9_\-\.]/g, '_');
 
-            statusMsg.textContent = 'Erfolgreich gesendet! (Bitte zur Sicherheit in der Tabelle prüfen)';
+            // Feste Seitenumbrüche vor Seite 2 und Seite 3 setzen
+            reportContainer.classList.add('pdf-export-mode');
+            page2.classList.add('pdf-page-break');
+            page3.classList.add('pdf-page-break');
+            formActions.style.display = 'none';
+
+            const opt = {
+                margin:       [10, 10, 10, 10],
+                filename:     fileName,
+                image:        { type: 'jpeg', quality: 0.98 },
+                html2canvas:  { scale: 2, useCORS: true, scrollY: 0, logging: false },
+                jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' },
+                pagebreak:    { mode: ['css', 'legacy'] }
+            };
+
+            await html2pdf().set(opt).from(reportContainer).save();
+
+            // Modus zurücksetzen
+            reportContainer.classList.remove('pdf-export-mode');
+            page2.classList.remove('pdf-page-break');
+            page3.classList.remove('pdf-page-break');
+            formActions.style.display = 'flex';
+
+            statusMsg.textContent = 'PDF erfolgreich erstellt und heruntergeladen!';
             statusMsg.className = 'status-msg success';
-            
-            document.getElementById('dartForm').reset();
-            document.querySelectorAll('.set-box.active').forEach(box => box.classList.remove('active'));
-            updateTeamNameAuto(); // Reset stellt auch Checkboxen zurück, daher alles wieder passend aufbauen
-            calculateTotals(); 
-            
-            // Strafen und Zähler nach Erfolg komplett auf null setzen
-            strafeInput.value = "0.20";
-            penalties = { h: [0,0,0,0,0,0], g: [0,0,0,0,0,0] };
-            
-        } catch (error) {
-            statusMsg.textContent = 'Netzwerkfehler beim Speichern: ' + error.message;
-            statusMsg.className = 'status-msg error';
-        } finally {
             statusMsg.style.display = 'block';
+
+        } catch (error) {
+            reportContainer.classList.remove('pdf-export-mode');
+            page2.classList.remove('pdf-page-break');
+            page3.classList.remove('pdf-page-break');
+            formActions.style.display = 'flex';
+
+            statusMsg.textContent = 'Fehler beim PDF-Export: ' + error.message;
+            statusMsg.className = 'status-msg error';
+            statusMsg.style.display = 'block';
+        } finally {
             submitBtn.disabled = false;
-            submitBtn.textContent = 'Spielbericht speichern';
+            resetBtn.disabled = false;
+            submitBtn.textContent = 'Als PDF exportieren';
         }
     });
 </script>
