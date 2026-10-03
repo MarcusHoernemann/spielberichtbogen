@@ -6,15 +6,18 @@
     <title>DC NBV2 Spielbericht</title>
 
     <!-- PWA & Homescreen Icons -->
+    <link rel="manifest" href="manifest.json">
     <link rel="icon" type="image/png" href="logo.png">
     <link rel="apple-touch-icon" href="logo.png">
+    <meta name="theme-color" content="#1e1e1e">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="DC Issso">
     <meta name="mobile-web-app-capable" content="yes">
 
-    <!-- html2pdf.js für den PDF-Export -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <!-- Lokale PDF-Bibliotheken im lib-Ordner -->
+    <script src="lib/html2pdf.bundle.min.js"></script>
+    <script src="lib/jspdf.plugin.autotable.min.js"></script>
 
 <!--########## CSS Design ##########-->    
 
@@ -841,6 +844,22 @@
 </div>
 
 <script>
+// ###############################################################################################
+// ################################# SERVICE WORKER REGISTRIERUNG #################################
+// ###############################################################################################
+
+    if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+            navigator.serviceWorker.register('./sw.js')
+                .then((reg) => {
+                    console.log('Service Worker erfolgreich registriert:', reg.scope);
+                })
+                .catch((err) => {
+                    console.warn('Service Worker Registrierung fehlgeschlagen:', err);
+                });
+        });
+    }
+
 // ###############################################################################################
 // ######################################## KONFIGURATION ########################################
 // ###############################################################################################
