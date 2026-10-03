@@ -1,11 +1,9 @@
-const CACHE_NAME = 'nbv2-spielbericht-v2';
+const CACHE_NAME = 'nbv2-spielbericht-v3';
 const ASSETS_TO_CACHE = [
   './',
   './index.html',
   './manifest.json',
-  './logo.png',
-  './lib/html2pdf.bundle.min.js',
-  './lib/jspdf.plugin.autotable.min.js'
+  './logo.png'
 ];
 
 self.addEventListener('install', (event) => {

@@ -15,10 +15,6 @@
     <meta name="apple-mobile-web-app-title" content="DC Issso">
     <meta name="mobile-web-app-capable" content="yes">
 
-    <!-- Lokale PDF-Bibliotheken im lib-Ordner -->
-    <script src="lib/html2pdf.bundle.min.js"></script>
-    <script src="lib/jspdf.plugin.autotable.min.js"></script>
-
 <!--########## CSS Design ##########-->    
 
     <style>
@@ -201,11 +197,13 @@
             background-color: var(--input-bg);
             cursor: pointer;
             transition: all 0.2s ease-in-out;
+            -webkit-print-color-adjust: exact;
+            print-color-adjust: exact;
         }
 
         .set-box.active {
-            background-color: #2ecc71;
-            border-color: #27ae60;
+            background-color: #2ecc71 !important;
+            border-color: #27ae60 !important;
             box-shadow: inset 0 0 5px rgba(0,0,0,0.5);
         }
 
@@ -292,12 +290,6 @@
             background-color: #2980b9;
         }
 
-        button.submit-btn:disabled {
-            background-color: #555;
-            color: #888;
-            cursor: not-allowed;
-        }
-
         button.reset-btn {
             background-color: var(--danger);
             color: white;
@@ -314,9 +306,6 @@
             text-align: center;
             display: none;
         }
-
-        .success { background-color: #1e4620; color: #81c784; }
-        .error { background-color: #4a1c1e; color: #e57373; }
 
         .settings-bar {
             display: flex;
@@ -400,266 +389,207 @@
             font-weight: bold;
         }
 
-        .copyright {
-            text-align: center;
-            margin-top: 25px;
-            padding-top: 15px;
-            font-size: 0.85em;
-            color: var(--secondary);
-            border-top: 1px solid var(--border);
-        }
-
         /* -------------------------------------------------------------
-           PDF-Export-Stile (Blöcke ungeteilt, klare Seitenaufteilung)
+           DRUCK- & PDF-STYLES (Exakt 3 Seiten, weißer Hintergrund)
         ------------------------------------------------------------- */
-        .pdf-section {
-            page-break-inside: avoid;
-            break-inside: avoid;
+        @media print {
+            @page {
+                size: A4 portrait;
+                margin: 8mm;
+            }
+
+            body {
+                background: #ffffff !important;
+                color: #000000 !important;
+                padding: 0 !important;
+                margin: 0 !important;
+                -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
+            }
+
+            .container {
+                max-width: 100% !important;
+                padding: 0 !important;
+                margin: 0 !important;
+                background: #ffffff !important;
+                box-shadow: none !important;
+                border-radius: 0 !important;
+            }
+
+            .settings-bar,
+            .button-group,
+            .sub-row,
+            .status-msg {
+                display: none !important;
+            }
+
+            .pdf-page-break {
+                page-break-before: always !important;
+                break-before: page !important;
+            }
+
+            .pdf-section {
+                page-break-inside: avoid !important;
+                break-inside: avoid !important;
+            }
+
+            h1 {
+                font-size: 18px !important;
+                margin: 0 0 6px 0 !important;
+                padding-bottom: 2px !important;
+                color: #1a252f !important;
+                border-bottom: 2px solid #2c3e50 !important;
+                text-align: center !important;
+            }
+
+            h2 {
+                font-size: 12px !important;
+                margin: 8px 0 4px 0 !important;
+                padding-bottom: 2px !important;
+                color: #2c3e50 !important;
+                border-bottom: 1.5px solid #bdc3c7 !important;
+            }
+
+            label {
+                font-size: 8.5px !important;
+                color: #333333 !important;
+                margin-bottom: 2px !important;
+                font-weight: bold !important;
+            }
+
+            input[type="text"],
+            input[type="number"],
+            input[type="date"],
+            textarea,
+            select {
+                padding: 3px 5px !important;
+                font-size: 10px !important;
+                background-color: #ffffff !important;
+                color: #000000 !important;
+                border: 1px solid #777777 !important;
+                border-radius: 3px !important;
+                height: 24px !important;
+            }
+
+            textarea {
+                height: 45px !important;
+            }
+
+            .grid-4 {
+                grid-template-columns: repeat(4, 1fr) !important;
+                gap: 8px !important;
+                margin-bottom: 6px !important;
+            }
+
+            .grid-2 {
+                grid-template-columns: 1fr 1fr !important;
+                gap: 10px !important;
+                margin-bottom: 6px !important;
+            }
+
+            .player-grid {
+                grid-template-columns: 70px 1fr 1fr !important;
+                gap: 4px !important;
+                margin-top: 4px !important;
+            }
+
+            .player-grid div {
+                font-size: 9.5px !important;
+            }
+
+            .ersatz-bg {
+                background-color: #f7f9fa !important;
+                color: #000000 !important;
+                border: 1px dashed #888888 !important;
+            }
+
+            .block-container {
+                border: 1px solid #7f8c8d !important;
+                margin-bottom: 8px !important;
+                background: #ffffff !important;
+            }
+
+            .block-title {
+                background-color: #2c3e50 !important;
+                color: #ffffff !important;
+                padding: 4px 8px !important;
+                font-size: 11px !important;
+            }
+
+            .match-row {
+                grid-template-columns: 60px 1fr 1fr 85px 85px !important;
+                gap: 8px !important;
+                padding: 4px 8px !important;
+                border-bottom: 1px solid #e0e0e0 !important;
+            }
+
+            .match-row:nth-child(even) {
+                background-color: #f8f9fa !important;
+            }
+
+            .match-header {
+                background-color: #34495e !important;
+                color: #ffffff !important;
+                font-size: 10px !important;
+            }
+
+            .dynamic-player {
+                color: #1a252f !important;
+                font-size: 10px !important;
+            }
+
+            .player-name-display {
+                font-size: 8.5px !important;
+                color: #555555 !important;
+            }
+
+            .set-box {
+                width: 16px !important;
+                height: 16px !important;
+                border: 1.5px solid #555555 !important;
+                background-color: #ffffff !important;
+            }
+
+            .set-box.active {
+                background-color: #27ae60 !important;
+                border-color: #1e8449 !important;
+            }
+
+            .result-container {
+                background: #f8f9fa !important;
+                padding: 6px 10px !important;
+                border: 1px solid #bdc3c7 !important;
+                margin-bottom: 8px !important;
+            }
+
+            .result-row {
+                gap: 8px !important;
+                margin-bottom: 4px !important;
+            }
+
+            .result-label {
+                min-width: 110px !important;
+                font-size: 10.5px !important;
+                color: #2c3e50 !important;
+            }
+
+            .result-row label {
+                font-size: 10px !important;
+                color: #333333 !important;
+            }
+
+            .result-row input {
+                width: 40px !important;
+                height: 22px !important;
+                font-size: 11px !important;
+                padding: 1px !important;
+                border: 1px solid #7f8c8d !important;
+                background-color: #ffffff !important;
+                color: #000000 !important;
+            }
         }
 
-        .pdf-page-break {
-            page-break-before: always !important;
-            break-before: page !important;
-        }
-
-        .pdf-export-mode {
-            background-color: #ffffff !important;
-            color: #000000 !important;
-            padding: 10px !important;
-            margin: 0 !important;
-            border-radius: 0 !important;
-            box-shadow: none !important;
-            width: 100% !important;
-            max-width: 100% !important;
-            box-sizing: border-box !important;
-            font-size: 11px !important;
-            line-height: 1.35 !important;
-        }
-
-        .pdf-export-mode h1 {
-            font-size: 19px !important;
-            margin: 0 0 8px 0 !important;
-            padding-bottom: 3px !important;
-            color: #1a252f !important;
-            border-bottom: 2px solid #2c3e50 !important;
-            text-align: center !important;
-        }
-
-        .pdf-export-mode h2 {
-            font-size: 13px !important;
-            margin: 10px 0 5px 0 !important;
-            padding-bottom: 2px !important;
-            color: #2c3e50 !important;
-            border-bottom: 1.5px solid #bdc3c7 !important;
-        }
-
-        .pdf-export-mode .settings-bar {
-            display: none !important;
-        }
-
-        .pdf-export-mode .grid-4 {
-            display: grid !important;
-            grid-template-columns: repeat(4, 1fr) !important;
-            gap: 10px !important;
-            margin-bottom: 8px !important;
-        }
-
-        .pdf-export-mode .grid-2 {
-            display: grid !important;
-            grid-template-columns: 1fr 1fr !important;
-            gap: 12px !important;
-            margin-bottom: 8px !important;
-        }
-
-        .pdf-export-mode .form-group {
-            margin-bottom: 5px !important;
-        }
-
-        .pdf-export-mode label {
-            font-size: 9px !important;
-            margin-bottom: 2px !important;
-            color: #333 !important;
-            font-weight: bold !important;
-        }
-
-        .pdf-export-mode input[type="text"],
-        .pdf-export-mode input[type="number"],
-        .pdf-export-mode input[type="date"],
-        .pdf-export-mode textarea,
-        .pdf-export-mode select {
-            padding: 4px 6px !important;
-            font-size: 10.5px !important;
-            background-color: #fff !important;
-            color: #000 !important;
-            border: 1px solid #888 !important;
-            border-radius: 4px !important;
-            height: 26px !important;
-            box-sizing: border-box !important;
-        }
-
-        .pdf-export-mode textarea {
-            height: 50px !important;
-        }
-
-        .pdf-export-mode .player-grid {
-            grid-template-columns: 75px 1fr 1fr !important;
-            gap: 5px !important;
-            margin-top: 5px !important;
-        }
-
-        .pdf-export-mode .player-grid div {
-            font-size: 10px !important;
-        }
-
-        .pdf-export-mode .ersatz-bg {
-            background-color: #f7f9fa !important;
-            color: #000 !important;
-            border: 1px dashed #aaa !important;
-        }
-
-        .pdf-export-mode .block-container {
-            border: 1.5px solid #7f8c8d !important;
-            border-radius: 6px !important;
-            margin-bottom: 12px !important;
-            background: #fff !important;
-            page-break-inside: avoid !important;
-            break-inside: avoid !important;
-        }
-
-        .pdf-export-mode .block-title {
-            background-color: #2c3e50 !important;
-            color: #ffffff !important;
-            padding: 5px 10px !important;
-            font-size: 11.5px !important;
-            font-weight: bold !important;
-        }
-
-        /* Feste, überschneidungsfreie Spaltenbreiten für den Match-Table */
-        .pdf-export-mode .match-row {
-            display: grid !important;
-            grid-template-columns: 65px 1fr 1fr 90px 90px !important;
-            gap: 10px !important;
-            padding: 5px 10px !important;
-            border-bottom: 1px solid #e0e0e0 !important;
-            align-items: center !important;
-            page-break-inside: avoid !important;
-            break-inside: avoid !important;
-        }
-
-        .pdf-export-mode .match-row:nth-child(even) {
-            background-color: #f9fbfd !important;
-        }
-
-        .pdf-export-mode .match-header {
-            background-color: #34495e !important;
-            color: #ffffff !important;
-            font-size: 10.5px !important;
-            padding: 5px 10px !important;
-        }
-
-        .pdf-export-mode .dynamic-player {
-            color: #1a252f !important;
-            font-size: 10.5px !important;
-            font-weight: bold !important;
-        }
-
-        .pdf-export-mode .player-name-display {
-            font-size: 9px !important;
-            color: #555 !important;
-            margin-left: 4px !important;
-        }
-
-        .pdf-export-mode .set-controls {
-            gap: 5px !important;
-        }
-
-        .pdf-export-mode .set-box {
-            width: 17px !important;
-            height: 17px !important;
-            border: 1.5px solid #666 !important;
-            border-radius: 3px !important;
-            background-color: #ffffff !important;
-        }
-
-        .pdf-export-mode .set-box.active {
-            background-color: #27ae60 !important;
-            border-color: #1e8449 !important;
-        }
-
-        .pdf-export-mode .sub-row {
-            padding: 6px 10px !important;
-            gap: 5px !important;
-            background-color: #f4f6f7 !important;
-            border-top: 1px dashed #bdc3c7 !important;
-            page-break-inside: avoid !important;
-            break-inside: avoid !important;
-        }
-
-        .pdf-export-mode .sub-twin-container {
-            gap: 6px !important;
-        }
-
-        .pdf-export-mode .compact-sub {
-            padding: 2px 4px !important;
-            border: 1px solid #ccc !important;
-            background: #fff !important;
-            border-radius: 4px !important;
-        }
-
-        .pdf-export-mode .compact-sub select {
-            padding: 2px 4px !important;
-            font-size: 9.5px !important;
-            height: 22px !important;
-        }
-
-        .pdf-export-mode .compact-sub span {
-            font-size: 9.5px !important;
-            padding: 0 3px !important;
-        }
-
-        .pdf-export-mode .result-container {
-            background: #f8f9fa !important;
-            padding: 8px 12px !important;
-            border: 1.5px solid #bdc3c7 !important;
-            border-radius: 6px !important;
-            margin-bottom: 10px !important;
-        }
-
-        .pdf-export-mode .result-row {
-            gap: 10px !important;
-            margin-bottom: 5px !important;
-        }
-
-        .pdf-export-mode .result-label {
-            min-width: 120px !important;
-            font-size: 11px !important;
-            color: #2c3e50 !important;
-        }
-
-        .pdf-export-mode .result-row label {
-            font-size: 10.5px !important;
-            color: #333 !important;
-        }
-
-        .pdf-export-mode .result-row input {
-            width: 45px !important;
-            height: 24px !important;
-            font-size: 11.5px !important;
-            padding: 2px !important;
-            border: 1px solid #7f8c8d !important;
-            background-color: #fff !important;
-            color: #000 !important;
-        }
-
-        .pdf-export-mode .copyright {
-            margin-top: 8px !important;
-            padding-top: 5px !important;
-            font-size: 8.5px !important;
-            color: #7f8c8d !important;
-            border-top: 1px solid #ddd !important;
-        }
-
-        @media (max-width: 600px) {
+        @media screen and (max-width: 600px) {
             .grid-2 {
                 grid-template-columns: 1fr;
             }
@@ -777,14 +707,14 @@
     </div>
 
     <!-- SEITE 2: Block 2 & Block 3 -->
-    <div id="pdfPage2" class="pdf-section">
+    <div id="pdfPage2" class="pdf-section pdf-page-break">
         <h2>Spielplan - Block 2 & 3</h2>
         <div id="blockContainer2" class="pdf-section"></div>
         <div id="blockContainer3" class="pdf-section"></div>
     </div>
 
     <!-- SEITE 3: Block 4, Endergebnis, Bestleistungen & Bemerkungen -->
-    <div id="pdfPage3" class="pdf-section">
+    <div id="pdfPage3" class="pdf-section pdf-page-break">
         <h2>Spielplan - Block 4</h2>
         <div id="blockContainer4" class="pdf-section"></div>
 
@@ -852,10 +782,10 @@
         window.addEventListener('load', () => {
             navigator.serviceWorker.register('./sw.js')
                 .then((reg) => {
-                    console.log('Service Worker erfolgreich registriert:', reg.scope);
+                    console.log('Service Worker registriert:', reg.scope);
                 })
                 .catch((err) => {
-                    console.warn('Service Worker Registrierung fehlgeschlagen:', err);
+                    console.warn('Service Worker Fehler:', err);
                 });
         });
     }
@@ -1222,70 +1152,21 @@
     // Initiales Setup
     updateTeamNameAuto();
 
-    // --- Formular absenden & PDF-Export (3-Seiten-Struktur ohne Block-Zerteilung) ---
-    document.getElementById('dartForm').addEventListener('submit', async (e) => {
+    // --- Formular absenden & nativer PDF-Druckexport (vollständig offline) ---
+    document.getElementById('dartForm').addEventListener('submit', (e) => {
         e.preventDefault();
         
-        const submitBtn = document.getElementById('submitBtn');
-        const resetBtn = document.getElementById('resetBtn');
-        const formActions = document.getElementById('formActions');
-        const statusMsg = document.getElementById('statusMessage');
-        const reportContainer = document.getElementById('reportContent');
-        const page2 = document.getElementById('pdfPage2');
-        const page3 = document.getElementById('pdfPage3');
-        
-        submitBtn.disabled = true;
-        resetBtn.disabled = true;
-        submitBtn.textContent = 'Erstelle PDF...';
-        statusMsg.style.display = 'none';
+        const datum = document.getElementById('datum').value || 'Datum';
+        const heim = document.getElementById('heimTeam').value || 'Heim';
+        const gast = document.getElementById('gastTeam').value || 'Gast';
+        const originalTitle = document.title;
 
-        try {
-            const datum = document.getElementById('datum').value || 'Datum';
-            const heim = document.getElementById('heimTeam').value || 'Heim';
-            const gast = document.getElementById('gastTeam').value || 'Gast';
-            const fileName = `Spielbericht_${datum}_${heim}_vs_${gast}.pdf`.replace(/[^a-zA-Z0-9_\-\.]/g, '_');
+        // Dateiname für den Druck- bzw. Speicher-Dialog vorschlagen
+        document.title = `Spielbericht_${datum}_${heim}_vs_${gast}`.replace(/[^a-zA-Z0-9_\-\.]/g, '_');
 
-            // Feste Seitenumbrüche vor Seite 2 und Seite 3 setzen
-            reportContainer.classList.add('pdf-export-mode');
-            page2.classList.add('pdf-page-break');
-            page3.classList.add('pdf-page-break');
-            formActions.style.display = 'none';
+        window.print();
 
-            const opt = {
-                margin:       [10, 10, 10, 10],
-                filename:     fileName,
-                image:        { type: 'jpeg', quality: 0.98 },
-                html2canvas:  { scale: 2, useCORS: true, scrollY: 0, logging: false },
-                jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' },
-                pagebreak:    { mode: ['css', 'legacy'] }
-            };
-
-            await html2pdf().set(opt).from(reportContainer).save();
-
-            // Modus zurücksetzen
-            reportContainer.classList.remove('pdf-export-mode');
-            page2.classList.remove('pdf-page-break');
-            page3.classList.remove('pdf-page-break');
-            formActions.style.display = 'flex';
-
-            statusMsg.textContent = 'PDF erfolgreich erstellt und heruntergeladen!';
-            statusMsg.className = 'status-msg success';
-            statusMsg.style.display = 'block';
-
-        } catch (error) {
-            reportContainer.classList.remove('pdf-export-mode');
-            page2.classList.remove('pdf-page-break');
-            page3.classList.remove('pdf-page-break');
-            formActions.style.display = 'flex';
-
-            statusMsg.textContent = 'Fehler beim PDF-Export: ' + error.message;
-            statusMsg.className = 'status-msg error';
-            statusMsg.style.display = 'block';
-        } finally {
-            submitBtn.disabled = false;
-            resetBtn.disabled = false;
-            submitBtn.textContent = 'Als PDF exportieren';
-        }
+        document.title = originalTitle;
     });
 </script>
 </body>
